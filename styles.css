@@ -1,0 +1,56 @@
+#container {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+#map {
+  height: 830.5px;
+  width: 650.3px;
+  border: solid;
+  flex-shrink: 0;
+}
+
+p,
+h1,
+h3 {
+  text-align: center;
+}
+p {
+  font-size: 20px;
+}
+.question {
+  background-color: rgba(36, 36, 218, 0.269);
+}
+.correct {
+  color: rgba(17, 94, 17, 0.527);
+}
+.wrong {
+  color: rgba(201, 23, 7, 0.597);
+}
+button {
+  display: none;
+}
+#QA {
+  height: 493px;
+}
+#restartButton {
+  margin: 10px auto;
+  width: 50%;
+  height: 40px;
+}
+#scores {
+  /* border: solid; */
+  border-top: dashed;
+}
+#hScoreHeading {
+  border: solid;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
