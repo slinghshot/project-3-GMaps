@@ -9,7 +9,7 @@ var history = [];
   sets map style to satellite 
 */
 function initMap() {
-  const myLatlng = { lat: 34.24089744728458, lng: -118.52824179620252 };
+  const LATLNG = { lat: 34.24089744728458, lng: -118.52824179620252 };
   let styles = [
     {
       featureType: "poi",
@@ -24,7 +24,7 @@ function initMap() {
   ];
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 16.9,
-    center: myLatlng,
+    center: LATLNG,
     gestureHandling: "none",
     keyboardShortcuts: false,
     disableDefaultUI: true,
