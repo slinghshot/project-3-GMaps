@@ -1,10 +1,13 @@
-var map;
-var rectangle;
+var map, rectangle;
 var score = 0;
 var topScore = -1;
 var userName = "player";
 var history = [];
 
+/* 
+  initMap() initalizes the map with no poi or road labels.
+  sets map style to satellite 
+*/
 function initMap() {
   const myLatlng = { lat: 34.24089744728458, lng: -118.52824179620252 };
   let styles = [
@@ -30,9 +33,14 @@ function initMap() {
   });
 }
 
+/*
+  mainGame() sets up the game,
+  array object qa contains question, boolean that changes based on answer, and rect bounds.
+  count increments by 1 if correct.
+*/
 async function mainGame() {
   let count = 0;
-  let questions = [
+  let qa = [
     {
       question: "Where is Physical Plant Mgmt./Corp. Yard?",
       correct: false,
@@ -84,12 +92,11 @@ async function mainGame() {
       },
     },
   ];
-  for (let i = 0; i < questions.length; i++) {
+  for (let i = 0; i < qa.length; i++) {
     document.getElementById(
       "QA"
-    ).innerHTML += `<p class="question">${questions[i].question}</p>`;
-    let coord = await getCoord();
-    let isCorrect = getAnswer(coord, questions[i]);
+    ).innerHTML += `<p class="question">${qa[i].question}</p>`;
+    let isCorrect = await getAnswer(await getCoord(), qa[i]);
 
     let output = isCorrect
       ? `<p class="correct">Your answer is correct!!</p>`
@@ -107,6 +114,9 @@ async function mainGame() {
   } incorrect</h1>`;
 }
 
+/* 
+  returns promise when map is double clicked, it returns array of object lat,lng.
+*/
 function getCoord() {
   return new Promise((resolve) => {
     google.maps.event.addListener(map, "dblclick", function (event) {
@@ -117,7 +127,11 @@ function getCoord() {
   });
 }
 
-function draw(ans) {
+/*
+  draws the rectangle given the bounds and if answer was correct
+  if ans correct stroke color is green color, if wrong its red.
+*/
+function drawRect(ans) {
   let bounds = ans.bounds;
   let colorIndicator = ans.correct ? "#00FF00" : "#FF0000";
   rectangle = new google.maps.Rectangle({
@@ -131,6 +145,10 @@ function draw(ans) {
   });
 }
 
+/*
+  getAnswer returns boolean
+  checks if coordinates clicked on are within the answers bounds.
+*/
 function getAnswer(coord, question) {
   if (
     coord.lat < question.bounds.north &&
@@ -140,23 +158,21 @@ function getAnswer(coord, question) {
   ) {
     question.correct = true;
   }
-  draw(question);
+  drawRect(question);
   return question.correct;
 }
 
-async function reinitialize() {
-  initMap();
-  document.getElementById("QA").textContent = "";
-  await mainGame();
-  displayButton();
-}
-
+/*
+  restart() shows the restart button,
+  when clicked it, calls arrow func 
+    that checks if score is higher than topScore, if true ask name, set that to topscore and call setLeaderboard()
+  push the high score obj into history array, to be sorted later by setLeaderBoard() func
+*/
 function restart() {
   return new Promise((resolve) => {
     let RESETBUTTON = document.getElementById("restartButton");
     RESETBUTTON.style.display = "block";
-    RESETBUTTON.addEventListener("click", resetit);
-    function resetit() {
+    RESETBUTTON.addEventListener("click", () => {
       RESETBUTTON.style.display = "none";
       if (score > topScore) {
         userName = prompt("Top Score: Your username:");
@@ -168,11 +184,14 @@ function restart() {
         history.push({ player: userName, score: topScore });
         setLeaderBoard();
       }
-      resolve(true);
-    }
+      resolve();
+    });
   });
 }
 
+/*
+  sets leaderboard high score {playerName}: {correct} - {wrong} 
+*/
 function setLeaderBoard() {
   document.getElementById("scores").innerHTML = "";
 
@@ -185,6 +204,14 @@ function setLeaderBoard() {
   }
 }
 
+/*
+  continuously loop through initalization 
+    of map, 
+    of questions
+    of maingame
+    of restart
+  once restart is clicked everything loops over
+*/
 while (true) {
   initMap();
   document.getElementById("QA").textContent = "";
