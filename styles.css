@@ -1,3 +1,10 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #e9ddc0;
+}
 #container {
   padding: 10px;
   display: flex;
@@ -22,13 +29,13 @@ p {
   font-size: 20px;
 }
 .question {
-  background-color: rgba(36, 36, 218, 0.269);
+  background-color: #2f82ba;
 }
 .correct {
-  color: rgba(17, 94, 17, 0.527);
+  color: #7eb364;
 }
 .wrong {
-  color: rgba(201, 23, 7, 0.597);
+  color: #f95450;
 }
 button {
   display: none;
@@ -47,10 +54,4 @@ button {
 }
 #hScoreHeading {
   border: solid;
-}
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
 }

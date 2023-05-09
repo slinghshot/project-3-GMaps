@@ -134,7 +134,7 @@ function getCoord() {
 */
 function drawRect(ans) {
   let bounds = ans.bounds;
-  let colorIndicator = ans.correct ? "#00FF00" : "#FF0000";
+  let colorIndicator = ans.correct ? "#00FF00" : "#fb1029";
   rectangle = new google.maps.Rectangle({
     strokeColor: colorIndicator,
     strokeOpacity: 0.8,
