@@ -49,8 +49,7 @@ button {
   height: 40px;
 }
 #scores {
-  /* border: solid; */
-  border-top: dashed;
+  border-top: 1px black solid;
 }
 #hScoreHeading {
   border: solid;
