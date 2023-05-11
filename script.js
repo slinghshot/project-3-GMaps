@@ -1,7 +1,7 @@
 var map, rectangle;
 var score = 0;
 var topScore = -1;
-var userName = "player";
+var userName = "";
 var history = [];
 
 /* 
@@ -9,7 +9,7 @@ var history = [];
   sets map style to satellite 
 */
 function initMap() {
-  const LATLNG = { lat: 34.24058036903054, lng: -118.52809409593642 };
+  const CENTER = { lat: 34.24058036903054, lng: -118.52809409593642 };
   let styles = [
     {
       featureType: "poi",
@@ -24,7 +24,7 @@ function initMap() {
   ];
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 16.9,
-    center: LATLNG,
+    center: CENTER,
     gestureHandling: "none",
     keyboardShortcuts: false,
     disableDefaultUI: true,
@@ -92,19 +92,19 @@ async function mainGame() {
       },
     },
   ];
-  for (let i = 0; i < qa.length; i++) {
+  for (const CurrentQ of qa) {
     document.getElementById(
       "QA"
-    ).innerHTML += `<p class="question">${qa[i].question}</p>`;
-    let isCorrect = await getAnswer(await getCoord(), qa[i]);
+    ).innerHTML += `<p class="question">${CurrentQ.question}</p>`;
+    let isCorrect = await getAnswer(await getCoord(), CurrentQ);
 
-    let output = isCorrect
+    drawRect(CurrentQ);
+
+    let outputText = isCorrect
       ? `<p class="correct">Your answer is correct!!</p>`
       : `<p class="wrong">Sorry wrong location.</p>`;
-    document.getElementById("QA").innerHTML += output;
-    if (isCorrect) {
-      count++;
-    }
+    document.getElementById("QA").innerHTML += outputText;
+    count += Number(isCorrect);
   }
   score = count;
   document.getElementById(
@@ -116,13 +116,13 @@ async function mainGame() {
 
 /* 
   returns promise when map is double clicked, it returns array of object lat,lng.
+  returns back to mainGame()
 */
 function getCoord() {
   return new Promise((resolve) => {
     google.maps.event.addListener(map, "dblclick", function (event) {
       let lat = event.latLng.lat();
       let lng = event.latLng.lng();
-      console.log(lat, lng);
       resolve({ lat, lng });
     });
   });
@@ -150,16 +150,15 @@ function drawRect(ans) {
   getAnswer returns boolean
   checks if coordinates clicked on are within the answers bounds.
 */
-function getAnswer(coord, question) {
+function getAnswer(userClickedCord, question) {
   if (
-    coord.lat < question.bounds.north &&
-    coord.lat > question.bounds.south &&
-    coord.lng < question.bounds.east &&
-    coord.lng > question.bounds.west
+    userClickedCord.lat < question.bounds.north &&
+    userClickedCord.lat > question.bounds.south &&
+    userClickedCord.lng < question.bounds.east &&
+    userClickedCord.lng > question.bounds.west
   ) {
     question.correct = true;
   }
-  drawRect(question);
   return question.correct;
 }
 
@@ -171,14 +170,14 @@ function getAnswer(coord, question) {
 */
 function restart() {
   return new Promise((resolve) => {
-    let RESETBUTTON = document.getElementById("restartButton");
-    RESETBUTTON.style.display = "block";
-    RESETBUTTON.addEventListener("click", () => {
-      RESETBUTTON.style.display = "none";
+    const RESET_BUTTON = document.getElementById("restartButton");
+    RESET_BUTTON.style.display = "block";
+    RESET_BUTTON.addEventListener("click", () => {
+      RESET_BUTTON.style.display = "none";
       if (score > topScore) {
         userName = prompt("Top Score: Your username:");
         if (userName === null || userName === "") {
-          userName = "player";
+          userName = "Player";
         }
         topScore = score;
 
@@ -198,11 +197,11 @@ function setLeaderBoard() {
 
   history.sort((a, b) => b.score - a.score);
 
-  for (let i = 0; i < history.length; i++) {
-    document.getElementById("scores").innerHTML += `<p>${history[i].player}: ${
-      history[i].score
-    } - ${5 - history[i].score}</p>`;
-  }
+  history.forEach((element) => {
+    document.getElementById("scores").innerHTML += `<p>${element.player}: ${
+      element.score
+    } - ${5 - element.score}</p>`;
+  });
 }
 
 /*
